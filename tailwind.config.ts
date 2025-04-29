@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
   	extend: {
+        fontFamily: {
+          primary: ['var(--font-quicksand)', 'sans-serif'], // Use CSS variable for Quicksand
+          secondary: ['Articulat CF', 'sans-serif'], // Add Articulat CF
+        },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -59,7 +63,12 @@ export default {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+           ecp: {
+             pink: 'hsl(var(--ecp-pink))',
+             cyan: 'hsl(var(--ecp-cyan))',
+             gray: 'hsl(var(--ecp-gray))',
+           }
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
