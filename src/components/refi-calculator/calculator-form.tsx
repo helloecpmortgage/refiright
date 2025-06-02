@@ -82,9 +82,8 @@ export function CalculatorForm({
   onSubmit,
   isCalculating,
 }: CalculatorFormProps) {
-  const [refinanceMode, setRefinanceMode] = React.useState<RefinanceMode>(
-    localStorage.getItem("refinanceMode") as RefinanceMode
-  );
+  const [refinanceMode, setRefinanceMode] =
+    React.useState<RefinanceMode>("Rate & Term");
 
   const form = useForm<CalculatorFormValues>({
     resolver: zodResolver(formSchema),
@@ -173,6 +172,13 @@ export function CalculatorForm({
     const isNewLoan = loanType === "newLoan";
     const prefix = loanType;
 
+    React.useEffect(() => {
+      if (typeof window !== "undefined") {
+        setRefinanceMode(
+          localStorage?.getItem("refinanceMode") as RefinanceMode
+        );
+      }
+    }, []);
     return (
       <Card className="flex-1 border border-primary">
         <CardHeader>

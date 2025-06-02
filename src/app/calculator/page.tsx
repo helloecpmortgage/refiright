@@ -28,6 +28,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { EcpLogo } from "@/components/shared/ecp-logo";
 import { useRouter } from "next/navigation";
+import MortgageResultsPDF from "@/components/refi-calculator/MortgageResultsPDF";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { Download } from "lucide-react";
 
 export default function Home() {
   const [results, setResults] = React.useState<CalculationOutput | null>(null);
@@ -171,6 +174,25 @@ export default function Home() {
     }
   };
 
+  const handleSaveData = () => {
+    fetch(
+      "https://api-refi-app-238196719501.us-west1.run.app/api/v1/refi-tracker",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agent: "",
+          current_amount: results?.input.currentLoan.originalLoanAmount || 0,
+          current_rate: results?.input.currentLoan.interestRate || 0,
+          new_amount: results?.input.newLoan.newLoanAmount || 0,
+          new_rate: results?.input.newLoan.interestRate || 0,
+          type_id: results?.input.mode === "Rate & Term" ? 1 : 2,
+        }),
+      }
+    );
+  };
   return (
     <main className="container mx-auto px-4 py-8 md:py-12">
       <div className="flex items-center justify-center mb-8">
@@ -190,7 +212,7 @@ export default function Home() {
           </CardTitle>
           <CardDescription className="font-primary">
             Provide the details for your current loan and the potential new
-            loan. Select 'Rate & Term' or 'Cash-Out' mode.
+            loan.
           </CardDescription>
           <button
             onClick={handleNavigateBack}
@@ -218,6 +240,20 @@ export default function Home() {
 
       {/* Conditionally render ResultsDisplay only when results are available and not currently calculating */}
       {!isCalculating && results && <ResultsDisplay results={results} />}
+      {/* PDF Download Link */}
+      {!isCalculating && results && (
+        <div className="mt-8 text-center">
+          <PDFDownloadLink
+            onClick={handleSaveData}
+            document={<MortgageResultsPDF data={results} />}
+            fileName="refinance_results.pdf"
+            className="bg-primary text-white hover:bg-primary/80 font-bold inline-flex items-center gap-2 px-8 py-2 rounded-md transition-colors duration-200"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Download PDF Report
+          </PDFDownloadLink>
+        </div>
+      )}
     </main>
   );
 }
