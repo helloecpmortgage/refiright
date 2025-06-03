@@ -29,7 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EcpLogo } from "@/components/shared/ecp-logo";
 import { useRouter } from "next/navigation";
 import MortgageResultsPDF from "@/components/refi-calculator/MortgageResultsPDF";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { Download } from "lucide-react";
 
 export default function Home() {

@@ -354,7 +354,7 @@ export function CalculatorForm({
           )}
 
           <Separator className="bg-primary" />
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-base font-semibold text-primary">
             Monthly Housing Costs
           </p>
 

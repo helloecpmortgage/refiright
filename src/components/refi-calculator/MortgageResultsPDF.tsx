@@ -68,8 +68,7 @@ const styles = StyleSheet.create({
     minHeight: 30, // Altura mínima para las filas
   },
   tableColHeader: {
-    width: "35%",
-    backgroundColor: "#f8f9fa", // Fondo para el encabezado de la columna
+    width: "35%", // Fondo para el encabezado de la columna
     padding: 8,
     textAlign: "left",
     fontWeight: "bold",
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
     border: "1px solid #cceeff",
   },
   summaryValue: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#007bff",
     marginBottom: 5,
@@ -250,7 +249,7 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
 
   return (
     <Document>
-      <Page size="LETTER" style={styles.page}>
+      <Page size="LEGAL" style={styles.page}>
         {/* Encabezado */}
         <View style={styles.headerContainer}>
           {/* Aquí iría tu logo, asegúrate de que la ruta sea accesible */}
@@ -299,7 +298,6 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
                   style={[
                     styles.tableColDifference,
                     item.isTotal ? { fontWeight: "bold" } : {},
-                    item.label === "HOA" ? styles.hoaRow : {}, // Aplicar estilo especial para HOA
                   ]}
                 >
                   {difference[item.key as keyof typeof difference] > 0 ? (
@@ -467,7 +465,7 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
               <Text style={styles.noteText}>
                 This option increases your total interest paid by approximately{" "}
               </Text>
-              <Text style={styles.boldText}>
+              <Text style={[styles.boldText, { fontSize: 10 }]}>
                 {formatCurrency(Math.abs(savings.totalInterestSavings))}
               </Text>
               <Text style={styles.noteText}>
@@ -517,7 +515,7 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
                 <Text style={styles.noteText}>
                   This cash-out refinance increases your loan balance by{" "}
                 </Text>
-                <Text style={styles.boldText}>
+                <Text style={[styles.boldText, { fontSize: 10 }]}>
                   {formatCurrency(
                     valueInputs.newLoan.newLoanAmount -
                       valueInputs.currentLoan.currentBalance
