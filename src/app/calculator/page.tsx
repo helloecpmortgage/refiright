@@ -192,6 +192,7 @@ export default function Home() {
         }),
       }
     );
+    router.push("/");
   };
   return (
     <main className="container mx-auto px-4 py-8 md:py-12">
