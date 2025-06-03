@@ -18,6 +18,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { CalculationInput, RefinanceMode } from "@/types";
+import { Switch } from "../ui/switch";
 
 const formSchema = z
   .object({
@@ -284,6 +285,17 @@ export function CalculatorForm({
             )}
           />
 
+          {/* {!isNewLoan && (
+            <div className="flex items-center gap-2">
+              <Switch
+                defaultChecked
+                onCheckedChange={() => {
+                  console.log("nuevo botón");
+                }}
+              />{" "}
+              Calculate Remaining Term in months
+            </div>
+          )} */}
           {!isNewLoan && (
             <FormField
               control={form.control}

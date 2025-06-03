@@ -12,6 +12,7 @@ import {
 import { CalculationOutput } from "@/types";
 import { formatCurrency, formatMonthsToYearsMonths } from "@/lib/calculations";
 import { useEffect, useState } from "react";
+import { pdfRendered } from "@/constants/pdf-render";
 
 const styles = StyleSheet.create({
   page: {
@@ -396,9 +397,9 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
               <Text style={styles.noteText}>
                 Based on these inputs, refinancing results in a higher monthly
                 payment of{" "}
-              </Text>
-              <Text style={styles.boldText}>
-                {formatCurrency(Math.abs(savings.monthlySavings))}
+                <Text style={styles.boldText}>
+                  {formatCurrency(Math.abs(savings.monthlySavings))}
+                </Text>
               </Text>
             </View>
           )}
@@ -413,11 +414,10 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
                 <Text style={styles.noteIcon}>⏱️</Text>
                 <Text style={styles.noteText}>
                   You could break even on closing costs in approximately{" "}
+                  <Text style={[styles.boldText, { fontSize: 10 }]}>
+                    {formatMonthsToYearsMonths(savings.breakEvenPeriodMonths)}.
+                  </Text>
                 </Text>
-                <Text style={[styles.boldText, { fontSize: 10 }]}>
-                  {formatMonthsToYearsMonths(savings.breakEvenPeriodMonths)}
-                </Text>
-                <Text style={styles.noteText}>.</Text>
               </View>
             )}
           {savings.breakEvenPeriodMonths === 0 &&
@@ -447,15 +447,14 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
               <Text style={styles.noteText}>
                 This option could reduce your total interest paid by
                 approximately{" "}
-              </Text>
-              <Text style={[styles.boldText, { fontSize: 10 }]}>
-                {formatCurrency(savings.totalInterestSavings)}
-              </Text>
-              <Text></Text>
-              <Text style={styles.noteText}>
-                {" "}
-                over the life of the new loan compared to the remaining interest
-                on the current loan.
+                <Text style={[styles.boldText, { fontSize: 10 }]}>
+                  {formatCurrency(savings.totalInterestSavings)}
+                </Text>
+                <Text style={styles.noteText}>
+                  {" "}
+                  over the life of the new loan compared to the remaining
+                  interest on the current loan.
+                </Text>
               </Text>
             </View>
           )}
@@ -464,14 +463,14 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
               <Text style={[styles.noteIcon, styles.warningIcon]}>⚠️</Text>
               <Text style={styles.noteText}>
                 This option increases your total interest paid by approximately{" "}
-              </Text>
-              <Text style={[styles.boldText, { fontSize: 10 }]}>
-                {formatCurrency(Math.abs(savings.totalInterestSavings))}
-              </Text>
-              <Text style={styles.noteText}>
-                {" "}
-                over the life of the new loan compared to the remaining interest
-                on the current loan.
+                <Text style={[styles.boldText, { fontSize: 10 }]}>
+                  {formatCurrency(Math.abs(savings.totalInterestSavings))}
+                </Text>
+                <Text style={styles.noteText}>
+                  {" "}
+                  over the life of the new loan compared to the remaining
+                  interest on the current loan.
+                </Text>
               </Text>
             </View>
           )}
@@ -531,25 +530,12 @@ export default function MortgageResultsPDF({ data }: MortgageResultsPDFProps) {
                 </Text>
               </View>
             )}
-          {/* <View style={styles.noteItem}>
-            <Text style={[styles.noteIcon, styles.warningIcon]}>!</Text>
-            <Text style={styles.noteText}>
-              This option could reduce your total interest paid by approximately{" "}
-              <Text style={styles.boldText}>
-                {data.notes.totalInterestReduced}
-              </Text>{" "}
-              over the life of the new loan compared to the remaining interest
-              on the current loan
-            </Text>
-          </View>
-          <View style={styles.noteItem}>
-            <Text style={[styles.noteIcon, styles.infoIcon]}>ⓘ</Text>
-            <Text style={styles.noteText}>
-              <Text style={styles.boldText}>Note:</Text> While the monthly
-              payment might be lower, extending the loan term from 28.0 to 30
-              years may impact total interest paid
-            </Text>
-          </View> */}
+        </View>
+
+        <View style={{ width: "100%", marginTop: 20 }}>
+          <Text style={[styles.noteText, { fontSize: "6px" }]}>
+            {pdfRendered.DISCLAIMER_MESSAGE}
+          </Text>
         </View>
       </Page>
     </Document>

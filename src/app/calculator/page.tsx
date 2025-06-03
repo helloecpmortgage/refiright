@@ -192,7 +192,6 @@ export default function Home() {
         }),
       }
     );
-    router.push("/");
   };
   return (
     <main className="container mx-auto px-4 py-8 md:py-12">
@@ -254,6 +253,13 @@ export default function Home() {
             Download PDF Report
           </PDFDownloadLink>
         </div>
+      )}
+      {/* PDF Viewer for debugging */}
+      {/* Uncomment to enable PDF viewer */}
+      {!isCalculating && results && (
+        <PDFViewer className="w-full h-[600px] mt-8">
+          <MortgageResultsPDF data={results} />
+        </PDFViewer>
       )}
     </main>
   );
