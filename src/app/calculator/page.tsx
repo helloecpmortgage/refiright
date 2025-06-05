@@ -256,11 +256,11 @@ export default function Home() {
       )}
       {/* PDF Viewer for debugging */}
       {/* Uncomment to enable PDF viewer */}
-      {!isCalculating && results && (
+      {/* {!isCalculating && results && (
         <PDFViewer className="w-full h-[600px] mt-8">
           <MortgageResultsPDF data={results} />
         </PDFViewer>
-      )}
+      )} */}
     </main>
   );
 }
