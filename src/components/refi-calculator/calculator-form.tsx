@@ -18,7 +18,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { CalculationInput, RefinanceMode } from "@/types";
-import { Switch } from "../ui/switch";
+import { ToggleGroup, Item } from "@radix-ui/react-toggle-group";
 
 const formSchema = z
   .object({
@@ -35,6 +35,7 @@ const formSchema = z
         .int()
         .positive("Must be a positive integer"),
       remainingTerm: z.coerce.number().min(0, "Cannot be negative"), // Can be 0 if paid off? Maybe min(0.1)?
+      remainingTermUnit: z.enum(["months", "years"]).default("months"),
       monthlyTaxes: z.coerce.number().min(0, "Cannot be negative"),
       monthlyInsurance: z.coerce.number().min(0, "Cannot be negative"),
       monthlyPmi: z.coerce.number().min(0, "Cannot be negative").default(0),
@@ -65,7 +66,13 @@ const formSchema = z
     }),
   })
   .refine(
-    (data) => data.currentLoan.remainingTerm <= data.currentLoan.originalTerm,
+    (data) => {
+      const remainingTerm =
+        data.currentLoan.remainingTermUnit === "months"
+          ? data.currentLoan.remainingTerm / 12
+          : data.currentLoan.remainingTerm;
+      return remainingTerm <= data.currentLoan.originalTerm;
+    },
     {
       message: "Remaining term cannot exceed original term",
       path: ["currentLoan", "remainingTerm"],
@@ -85,6 +92,9 @@ export function CalculatorForm({
 }: CalculatorFormProps) {
   const [refinanceMode, setRefinanceMode] =
     React.useState<RefinanceMode>("Rate & Term");
+  const [remainingTermUnit, setRemainingTermUnit] = React.useState<
+    "months" | "years"
+  >("months");
 
   const form = useForm<CalculatorFormValues>({
     resolver: zodResolver(formSchema),
@@ -125,7 +135,11 @@ export function CalculatorForm({
     let newLoanAmount: number;
     const currentBalance = values.currentLoan.currentBalance || 0;
     const closingCosts = values.newLoan.closingCosts || 0;
+    let remainingTerm = Number(values.currentLoan.remainingTerm);
 
+    if (remainingTermUnit === "months") {
+      remainingTerm = remainingTerm / 12;
+    }
     if (refinanceMode === "Cash-Out") {
       const cashOut = values.newLoan.cashOutAmount || 0;
       newLoanAmount =
@@ -142,6 +156,7 @@ export function CalculatorForm({
       mode: refinanceMode,
       currentLoan: {
         ...values.currentLoan,
+        remainingTerm,
         monthlyPmi: values.currentLoan.monthlyPmi ?? 0, // Ensure defaults if undefined
         monthlyHoa: values.currentLoan.monthlyHoa ?? 0,
       },
@@ -180,6 +195,11 @@ export function CalculatorForm({
         );
       }
     }, []);
+
+    React.useEffect(() => {
+      form.setValue("currentLoan.remainingTermUnit", remainingTermUnit);
+    }, [remainingTermUnit]);
+
     return (
       <Card className="flex-1 border border-primary">
         <CardHeader>
@@ -284,29 +304,63 @@ export function CalculatorForm({
               </FormItem>
             )}
           />
-
-          {/* {!isNewLoan && (
-            <div className="flex items-center gap-2">
-              <Switch
-                defaultChecked
-                onCheckedChange={() => {
-                  console.log("nuevo botón");
+          <br />
+          {!isNewLoan && (
+            <div className="flex items-center gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                Remaining Term:
+              </label>
+              <ToggleGroup
+                type="single"
+                defaultValue="months"
+                aria-label="Select term unit"
+                value={remainingTermUnit}
+                onValueChange={(value) => {
+                  setRemainingTermUnit(value as "months" | "years");
                 }}
-              />{" "}
-              Calculate Remaining Term in months
+                className="ml-2"
+              >
+                <Item
+                  value="months"
+                  className={`px-2 py-1 rounded-l-md  ${
+                    remainingTermUnit === "months"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-slate-200"
+                  }`}
+                >
+                  Months
+                </Item>
+                <Item
+                  value="years"
+                  className={`px-2 py-1 rounded-r-md  ${
+                    remainingTermUnit === "years"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-slate-200"
+                  }`}
+                >
+                  Years
+                </Item>
+              </ToggleGroup>
             </div>
-          )} */}
+          )}
           {!isNewLoan && (
             <FormField
               control={form.control}
               name={`${prefix}.remainingTerm`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Remaining Term (Years)</FormLabel>
+                  <FormLabel>
+                    Remaining Term (
+                    {remainingTermUnit === "months" ? "Months" : "Years"})
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="e.g., 28.5"
+                      placeholder={
+                        remainingTermUnit === "months"
+                          ? "e.g., 342"
+                          : "e.g., 28.5"
+                      }
                       {...field}
                       step="any"
                     />

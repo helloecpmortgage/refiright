@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const quicksand = Quicksand({
   subsets: ["latin"],
   variable: "--font-quicksand", // CSS variable for Quicksand
-  display: 'swap',
+  display: "swap",
 });
 
 // Assuming Articulat CF needs to be loaded differently (e.g., local font or external CSS)
@@ -18,6 +18,10 @@ const quicksand = Quicksand({
 export const metadata: Metadata = {
   title: "RefiRight - ECP Mortgage Calculator", // Updated title
   description: "Refinance mortgage calculator for ECP Loan Officers",
+  robots: {
+    index: false, // Prevent indexing by search engines
+    follow: false, // Prevent following links
+  },
 };
 
 export default function RootLayout({
